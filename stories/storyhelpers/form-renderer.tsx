@@ -62,6 +62,37 @@ export const renderFormType = (
 			
 			let control : any = <input className="form-control" type="text" />;
 			const formFieldType = formField.type.toLowerCase();
+
+			if (formFieldType == "input") {
+				showLabel = false;
+				return <>
+					<label 
+						htmlFor={formField.fieldName}
+					>{formField.label}</label>
+					<input
+						type="text" 
+						id={formField.fieldName}
+						title={formField.label}
+						value={getFormFieldValue(formField.fieldName)}
+						onChange={(event : any) => {
+								setFormFieldValue(formField.fieldName, event.target.value);
+								if (formField.node) {
+									/*getFlowEventRunner().executeNode(formField.node,
+										{	
+											...config,
+											...getFormValues(), 
+											[formField.fieldName] : option.value
+										}
+									).catch((error) => {
+										console.log("error after executeNode in checkbox.onPress", error);
+									});
+									*/
+								}
+							}
+						}
+					></input>
+				</>;
+			} else
 			if (formFieldType == "checkbox") {
 				return <div>
 					{formField.options.map((option, index) => {

@@ -65,6 +65,11 @@ let payload = {
               value: 2
             }
           ]
+        },
+        {
+          type: "input",
+          fieldName: "input1",
+          label: "input label"
         }
       ]
     },
@@ -86,6 +91,17 @@ let payload = {
             {
               type: "element",
               caption: "element2"
+            }
+          ]
+        },
+        {
+          type: "form",
+          caption: "form caption",
+          form : [            
+            {
+              type: "input",
+              fieldName: "input2",
+              label: "input label2"
             }
           ]
         },
