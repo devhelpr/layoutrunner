@@ -8,33 +8,39 @@ import {
 */
 
 import { FormComponent } from './form';
-import { IRootLayout} from './interfaces';
+import { IRootLayout } from './interfaces';
 
 //import * as uuid from 'uuid';
 //const uuidV4 = uuid.v4;
 
 export interface LayoutComponentProps {
-	nodeName: string;
-	payload: any;
-	rootLayout? : IRootLayout;
-	isAppShell? : boolean;
-	onAppMount? : (payload : any) => void;
-	onGetStylesFromPayload? : (payload : any) => any;
-	onPageMount? : (payload : any) => void; 
-	filterLayout?: (layoutBlock : any) => boolean;
-	renderNavigation?: (navigationBlock: any, 
-					navigationActions : any[],
-					navigationActionVariables: any) => any;
-	renderLayoutType: (layoutBlock : any, 
-		isInForm : boolean, 
-		form : FormComponent | undefined, 		
-		setLayoutVisibleState : (layoutBlockName : string, isVisible : boolean) => void,
-		rootLayout : IRootLayout
-	) => any
+  nodeName: string;
+  payload: any;
+  rootLayout?: IRootLayout;
+  isAppShell?: boolean;
+  onAppMount?: (payload: any) => void;
+  onGetStylesFromPayload?: (payload: any) => any;
+  onPageMount?: (payload: any) => void;
+  filterLayout?: (layoutBlock: any) => boolean;
+  renderNavigation?: (
+    navigationBlock: any,
+    navigationActions: any[],
+    navigationActionVariables: any
+  ) => any;
+  renderLayoutType: (
+    layoutBlock: any,
+    isInForm: boolean,
+    form: FormComponent | undefined,
+    setLayoutVisibleState: (
+      layoutBlockName: string,
+      isVisible: boolean
+    ) => void,
+    rootLayout: IRootLayout
+  ) => any;
 }
 // setNavigationActions? : (navigationActions: any[]
 export interface LayoutComponentState {
-	layoutVisibleState : boolean[];
+  layoutVisibleState: boolean[];
 }
 
 /*
@@ -68,115 +74,151 @@ const mapDispatchToProps = (dispatch: any) => {
 }
 */
 
-
-
 // https://medium.com/@jrwebdev/react-higher-order-component-patterns-in-typescript-42278f7590fb
 
-class InternalLayoutComponent extends React.Component<LayoutComponentProps, LayoutComponentState> {
-	
-	isAppMounted = false;
-	
-	state = {
-		layoutVisibleState : []
-	}
+class InternalLayoutComponent extends React.Component<
+  LayoutComponentProps,
+  LayoutComponentState
+> {
+  isAppMounted = false;
 
-	setLayoutVisibleState = (layoutBlockName : any, isVisible : boolean) => {
+  state = {
+    layoutVisibleState: [],
+  };
 
-		// TODO :
-		//  - add promise
-		//  - remove renderTrigger ??
-		if (Array.isArray(layoutBlockName)) {
-			let layoutVisibleState : any = {};
-			layoutBlockName.map((layoutBlock) => {
-				let orgIsVisible = true;
-				const isVisible = !!layoutBlock.isVisible;
-				if (this.state.layoutVisibleState[layoutBlock.name] !== undefined) {
-					orgIsVisible = !!this.state.layoutVisibleState[layoutBlock.name];
-				}
-				if (isVisible !== orgIsVisible) {
-					layoutVisibleState[layoutBlock.name]=  !!isVisible;
-				}
-			});
+  setLayoutVisibleState = (layoutBlockName: any, isVisible: boolean) => {
+    // TODO :
+    //  - add promise
+    //  - remove renderTrigger ??
+    if (Array.isArray(layoutBlockName)) {
+      let layoutVisibleState: any = {};
+      layoutBlockName.map(layoutBlock => {
+        let orgIsVisible = true;
+        const isVisible = !!layoutBlock.isVisible;
+        if (this.state.layoutVisibleState[layoutBlock.name] !== undefined) {
+          orgIsVisible = !!this.state.layoutVisibleState[layoutBlock.name];
+        }
+        if (isVisible !== orgIsVisible) {
+          layoutVisibleState[layoutBlock.name] = !!isVisible;
+        }
+        return true;
+      });
 
-			this.setState({
-				layoutVisibleState: {
-					...this.state.layoutVisibleState,
-					...layoutVisibleState
-				}
-			}, () => {
-				console.log("LayoutVisibleState after setstate", this.state.layoutVisibleState);
-			});
-		} else {
-			let orgIsVisible = true;
-			if (this.state.layoutVisibleState[layoutBlockName] !== undefined) {
-				orgIsVisible = !!this.state.layoutVisibleState[layoutBlockName];
-			}
-			console.log(layoutBlockName, isVisible,orgIsVisible, this.state.layoutVisibleState[layoutBlockName], this.state.layoutVisibleState);
-			if (isVisible !== orgIsVisible) {
-				console.log("layoutBlockName", layoutBlockName ,isVisible);
-				this.setState({
-					layoutVisibleState: {
-					...this.state.layoutVisibleState,
-					[layoutBlockName]: !!isVisible}
-				}, () => {
-					console.log("LayoutVisibleState after setstate", this.state.layoutVisibleState);
-				});
-			}
-		}
-	}
+      this.setState(
+        {
+          layoutVisibleState: {
+            ...this.state.layoutVisibleState,
+            ...layoutVisibleState,
+          },
+        },
+        () => {
+          console.log(
+            'LayoutVisibleState after setstate',
+            this.state.layoutVisibleState
+          );
+        }
+      );
+    } else {
+      let orgIsVisible = true;
+      if (this.state.layoutVisibleState[layoutBlockName] !== undefined) {
+        orgIsVisible = !!this.state.layoutVisibleState[layoutBlockName];
+      }
+      console.log(
+        layoutBlockName,
+        isVisible,
+        orgIsVisible,
+        this.state.layoutVisibleState[layoutBlockName],
+        this.state.layoutVisibleState
+      );
+      if (isVisible !== orgIsVisible) {
+        console.log('layoutBlockName', layoutBlockName, isVisible);
+        this.setState(
+          {
+            layoutVisibleState: {
+              ...this.state.layoutVisibleState,
+              [layoutBlockName]: !!isVisible,
+            },
+          },
+          () => {
+            console.log(
+              'LayoutVisibleState after setstate',
+              this.state.layoutVisibleState
+            );
+          }
+        );
+      }
+    }
+  };
 
-	localStore : any = {}
+  localStore: any = {};
 
-	getValueFromLocalStore = (key : string) => {
-		return this.localStore[key];
-	}
+  getValueFromLocalStore = (key: string) => {
+    return this.localStore[key];
+  };
 
-	setValueFromLocalStore = (key : string, value : any) => {
-		this.localStore[key] = value;
-	}
+  setValueFromLocalStore = (key: string, value: any) => {
+    this.localStore[key] = value;
+  };
 
-	render() {
-		if (!this.props.payload || !this.props.payload.layout) {
-			return <></>;
-		}
+  render() {
+    if (!this.props.payload || !this.props.payload.layout) {
+      return <></>;
+    }
 
-		if (!this.isAppMounted && !!this.props.isAppShell && this.props.onAppMount) {
-			this.isAppMounted = true;
-			this.props.onAppMount(this.props.payload)
-		}
+    if (
+      !this.isAppMounted &&
+      !!this.props.isAppShell &&
+      this.props.onAppMount
+    ) {
+      this.isAppMounted = true;
+      this.props.onAppMount(this.props.payload);
+    }
 
-		const layout : any[] = this.props.payload.layout;
-		const navigationActionVariables : any = {};
-		if (this.props.payload && this.props.payload.navigationActions) {
-			this.props.payload.navigationActions.map((navigationAction : any) => {			
-				if (navigationAction.getVariable) {
-					navigationActionVariables[ navigationAction.getVariable] = (this.props as any)["_" + navigationAction.getVariable];
-				}
-				if (navigationAction.visibleByVariable) {
-					navigationActionVariables[ navigationAction.visibleByVariable] = (this.props as any)["_" + navigationAction.visibleByVariable];
-				}
-				if (navigationAction.enabledByVariable) {
-					navigationActionVariables[navigationAction.enabledByVariable] = (this.props as any)["_" + navigationAction.enabledByVariable];
-				}
-			})			
-		}
+    const layout: any[] = this.props.payload.layout;
+    const navigationActionVariables: any = {};
+    if (this.props.payload && this.props.payload.navigationActions) {
+      this.props.payload.navigationActions.map((navigationAction: any) => {
+        if (navigationAction.getVariable) {
+          navigationActionVariables[navigationAction.getVariable] = (this
+            .props as any)['_' + navigationAction.getVariable];
+        }
+        if (navigationAction.visibleByVariable) {
+          navigationActionVariables[navigationAction.visibleByVariable] = (this
+            .props as any)['_' + navigationAction.visibleByVariable];
+        }
+        if (navigationAction.enabledByVariable) {
+          navigationActionVariables[navigationAction.enabledByVariable] = (this
+            .props as any)['_' + navigationAction.enabledByVariable];
+        }
+        return true;
+      });
+    }
 
-		let styles = {};
-		if (this.props.payload && this.props.onGetStylesFromPayload) {
-			styles = this.props.onGetStylesFromPayload(this.props.payload)
-		}
+    let styles = {};
+    if (this.props.payload && this.props.onGetStylesFromPayload) {
+      styles = this.props.onGetStylesFromPayload(this.props.payload);
+    }
 
-		// key={uuidV4()}
-		return <React.Fragment>
-			{this.props.renderNavigation && this.props.renderNavigation(this.props.payload.navigation, this.props.payload.navigationActions || [], navigationActionVariables)}
-			{
-				layout.map((layoutBlock : any, index : number) => {
-					
-					if (this.props.filterLayout && !this.props.filterLayout(layoutBlock)) {					
-						return <React.Fragment key={"layoutblock-" + index}></React.Fragment>;
-					}					
+    // key={uuidV4()}
+    return (
+      <React.Fragment>
+        {this.props.renderNavigation &&
+          this.props.renderNavigation(
+            this.props.payload.navigation,
+            this.props.payload.navigationActions || [],
+            navigationActionVariables
+          )}
+        {layout.map((layoutBlock: any, index: number) => {
+          if (
+            this.props.filterLayout &&
+            !this.props.filterLayout(layoutBlock)
+          ) {
+            return (
+              <React.Fragment key={'layoutblock-' + index}></React.Fragment>
+            );
+          }
 
-					/*
+          /*
 						todo:
 							- passthrough setLayoutVisibleState method
 							- if layoutBlock has a name and this exists in state.layoutVisibleState
@@ -188,27 +230,41 @@ class InternalLayoutComponent extends React.Component<LayoutComponentProps, Layo
 
 					*/
 
-					if (layoutBlock.name && this.state.layoutVisibleState[layoutBlock.name] !== undefined && 
-						this.state.layoutVisibleState[layoutBlock.name] === false) {
-						return <React.Fragment key={"layoutblock-" + index}></React.Fragment>;
-					}
-					return <React.Fragment key={"layoutblock-" + index}>
-							{this.props.renderLayoutType(layoutBlock, false, undefined, this.setLayoutVisibleState, this.props.rootLayout ? this.props.rootLayout : {
-								name: this.props.nodeName, 
-								layout: layout,
-								context: this.props.payload.context || {},
-								styles: styles,
-								getValueFromLocalStore : this.getValueFromLocalStore,
-								setValueFromLocalStore : this.setValueFromLocalStore,
-							})}
-					</React.Fragment>
-				})
-			}
-		</React.Fragment>;
-	}
+          if (
+            layoutBlock.name &&
+            this.state.layoutVisibleState[layoutBlock.name] !== undefined &&
+            this.state.layoutVisibleState[layoutBlock.name] === false
+          ) {
+            return (
+              <React.Fragment key={'layoutblock-' + index}></React.Fragment>
+            );
+          }
+          return (
+            <React.Fragment key={'layoutblock-' + index}>
+              {this.props.renderLayoutType(
+                layoutBlock,
+                false,
+                undefined,
+                this.setLayoutVisibleState,
+                this.props.rootLayout
+                  ? this.props.rootLayout
+                  : {
+                      name: this.props.nodeName,
+                      layout: layout,
+                      context: this.props.payload.context || {},
+                      styles: styles,
+                      getValueFromLocalStore: this.getValueFromLocalStore,
+                      setValueFromLocalStore: this.setValueFromLocalStore,
+                    }
+              )}
+            </React.Fragment>
+          );
+        })}
+      </React.Fragment>
+    );
+  }
 }
 
 //export const Layout = ReactComponentFlowConnector(connect(mapStateToProps, mapDispatchToProps)(InternalLayoutComponent));
 //export const Layout = connect(mapStateToProps)(InternalLayoutComponent);
 export const Layout = InternalLayoutComponent;
-
