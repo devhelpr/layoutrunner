@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 
 /*
 import { 
@@ -10,10 +10,8 @@ import {
 import { FormComponent } from './form';
 import { IRootLayout} from './interfaces';
 
-import * as uuid from 'uuid';
-
-const uuidV4 = uuid.v4;
-
+//import * as uuid from 'uuid';
+//const uuidV4 = uuid.v4;
 
 export interface LayoutComponentProps {
 	nodeName: string;
@@ -39,6 +37,7 @@ export interface LayoutComponentState {
 	layoutVisibleState : boolean[];
 }
 
+/*
 const mapStateToProps = (state : any, ownProps : any) => {
 	let mappedState : any = {};
 	//console.log("ownProps", ownProps);
@@ -60,6 +59,7 @@ const mapStateToProps = (state : any, ownProps : any) => {
 	}
 	return mappedState;
 }
+*/
 
 /*
 const mapDispatchToProps = (dispatch: any) => {
@@ -166,7 +166,8 @@ class InternalLayoutComponent extends React.Component<LayoutComponentProps, Layo
 			styles = this.props.onGetStylesFromPayload(this.props.payload)
 		}
 
-		return <React.Fragment key={uuidV4()}>
+		// key={uuidV4()}
+		return <React.Fragment>
 			{this.props.renderNavigation && this.props.renderNavigation(this.props.payload.navigation, this.props.payload.navigationActions || [], navigationActionVariables)}
 			{
 				layout.map((layoutBlock : any, index : number) => {
@@ -208,5 +209,6 @@ class InternalLayoutComponent extends React.Component<LayoutComponentProps, Layo
 }
 
 //export const Layout = ReactComponentFlowConnector(connect(mapStateToProps, mapDispatchToProps)(InternalLayoutComponent));
-export const Layout = connect(mapStateToProps)(InternalLayoutComponent);
+//export const Layout = connect(mapStateToProps)(InternalLayoutComponent);
+export const Layout = InternalLayoutComponent;
 

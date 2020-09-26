@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+//import { connect } from 'react-redux';
 
 //import { getFlowEventRunner } from '@devhelpr/flowrunner-redux';
 
@@ -34,8 +34,8 @@ export interface FormProps {
 		setFlowValue : any,
 		renderLayoutType : (layoutBlock : any, 
 			isInForm: boolean, 
-			parentForm : FormComponent | undefined, 
-			setLayoutVisibleState: any,
+			parentForm : FormComponent | undefined,
+			setLayoutVisibleState : (layoutBlockName : string, isVisible : boolean) => void, 
 			rootLayout: IRootLayout) => any,
 		rootLayout: IRootLayout,
 		setLayoutVisibleState: any
@@ -54,6 +54,7 @@ export interface FormState {
 	isInitialised : boolean;
 }
 
+/*
 const mapStateToProps = (state : any, ownProps : any) => {
 	let mappedState : any = {};
 	if (ownProps.formDefinition) {
@@ -74,6 +75,8 @@ const mapStateToProps = (state : any, ownProps : any) => {
 	}
 	return mappedState;
 }
+
+*/
 
 export class FormComponent extends React.Component<FormProps, FormState> {
 
@@ -223,4 +226,5 @@ export class FormComponent extends React.Component<FormProps, FormState> {
 	}
 }
 
-export const Form = connect(mapStateToProps)(FormComponent);
+//export const Form = connect(mapStateToProps)(FormComponent);
+export const Form = FormComponent;

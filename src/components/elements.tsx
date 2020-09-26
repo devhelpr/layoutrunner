@@ -1,6 +1,6 @@
 import React from 'react';
 import { IElements } from './interfaces';
-import { connect } from 'react-redux';
+//import { connect } from 'react-redux';
 //import { getFlowEventRunner } from '@devhelpr/flowrunner-redux';
 
 export interface ElementProps extends IElements {
@@ -12,6 +12,7 @@ export interface ElementState {
 
 }
 
+/*
 const mapStateToProps = (state : any, ownProps : any) => {
 	let mappedState : any = {};
 	if (ownProps.elements) {
@@ -23,6 +24,7 @@ const mapStateToProps = (state : any, ownProps : any) => {
 	}
 	return mappedState;
 }
+*/
 
 export class InternalElements extends React.Component<ElementProps, ElementState> {
 
@@ -59,4 +61,5 @@ export class InternalElements extends React.Component<ElementProps, ElementState
 	}
 }
 
-export const Elements = connect(mapStateToProps)(InternalElements);
+//export const Elements = connect(mapStateToProps)(InternalElements);
+export const Elements = InternalElements;

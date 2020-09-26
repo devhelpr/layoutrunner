@@ -1,20 +1,21 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react';
-import { Provider } from 'react-redux';
-import { createStore } from 'redux'
-
+//import { Provider } from 'react-redux';
+//import { createStore } from 'redux'
+import { renderLayoutType } from './storyhelpers/layout-renderer';
 
 function dummyApp(state) {  
   return state
 }
 
-const store = createStore(dummyApp);
+//const store = createStore(dummyApp);
+
+import { LayoutComponentProps } from '../src/components/layout';
 
 import { 
   FormComponent, 
   Layout, 
-  Elements, 
-  LayoutComponentProps, 
+  Elements,
   IRootLayout 
 } from '../src';
 
@@ -38,28 +39,80 @@ export default meta;
 let payload = {
   layout : [
     {
-      type: "element"
-    }
+      type: "elements",
+      elements : [
+        {
+          type: "element",
+          caption: "hello"
+        }
+      ]
+    },
+    {
+      type: "form",
+      caption: "form caption",
+      form : [
+        {
+          type: "checkbox",
+          fieldName: "checkbox1",
+          caption: "hello",
+          options: [
+            {
+              label: "checkbox label",
+              value: 1
+            },
+            {
+              label: "checkbox label 2",
+              value: 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      type: "layout",
+      layout : [
+        {
+          type: "elements",
+          elements : [
+            {
+              type: "element",
+              caption: "element1"
+            }
+          ]
+        },
+        {
+          type: "elements",
+          elements : [
+            {
+              type: "element",
+              caption: "element2"
+            }
+          ]
+        },
+        {
+          type: "layout",
+          layout : [
+            {
+              type: "elements",
+              elements : [
+                {
+                  type: "element",
+                  caption: "hello element"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
   ]
 };
 
-const renderLayoutType = (layoutBlock : any, 
-    isInForm : boolean, 
-    form : FormComponent | undefined, 		
-    setLayoutVisibleState : (layoutBlockName : string, isVisible : boolean) => void,
-    rootLayout : IRootLayout
-  ) => {
-    if (layoutBlock.type === "element") {
-      return <div>Element</div>
-    }
-    return <></>;
-}
 
-const Template: Story<LayoutComponentProps> = args => <Provider store={store}>
-    <Layout 
+// <Provider store={store}>
+const Template: Story<LayoutComponentProps> = args => <Layout 
       renderLayoutType={renderLayoutType}
-      payload={payload} {...args} />
-  </Provider>;
+      payload={payload} {...args} />;
 
 // By passing using the Args format for exported stories, you can control the props for a component for reuse in a test
 // https://storybook.js.org/docs/react/workflows/unit-testing
